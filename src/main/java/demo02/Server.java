@@ -1,6 +1,6 @@
-package demo01;
+package demo02;
 
-import demo01.handler.HelloServerHandler;
+import demo02.handler.HelloServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -8,10 +8,17 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.util.NettyRuntime;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class Server {
     static int port = 6666;
+    public static List<SocketChannel> socks;
+
+    static {
+        socks = new LinkedList<>();
+    }
 
     public static void main(String[] args) throws Exception {
         // 创建两个线程组 bossGroup 和 workerGroup
@@ -25,6 +32,7 @@ public class Server {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
+                            socks.add(ch);
                             ch.pipeline().addLast(new HelloServerHandler());
                         }
                     });
